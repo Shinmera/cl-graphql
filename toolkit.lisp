@@ -23,3 +23,12 @@
         (= code #x000D)
         (<= #x0020 code #xFFFF))))
 
+(defun translate-name (name)
+  (etypecase name
+    (string name)
+    (symbol (with-output-to-string (out)
+              (loop with upcase = T
+                    for char across (symbol-name name)
+                    do (cond ((eql char #\-) (setf upcase T))
+                             (upcase (write-char (char-upcase char) out))
+                             (T (write-char (char-downcase char) out))))))))

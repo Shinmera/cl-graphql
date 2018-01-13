@@ -14,7 +14,10 @@
   :serial T
   :components ((:file "package")
                (:file "toolkit")
-               (:file "objects")
+               (:file "representations")
                (:file "printer")
+               (:file "schema")
+               (:file "generate")
                (:file "documentation"))
-  :depends-on (:documentation-utils))
+  :depends-on (:documentation-utils
+               :trivial-indent))
