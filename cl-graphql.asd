@@ -16,6 +16,7 @@
                (:file "toolkit")
                (:file "representations")
                (:file "printer")
+               (:file "reader")
                (:file "schema")
                (:file "generate")
                (:file "documentation"))

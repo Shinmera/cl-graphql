@@ -23,6 +23,30 @@
         (= code #x000D)
         (<= #x0020 code #xFFFF))))
 
+(defun whitespace-p (char)
+  (let ((code (char-code char)))
+    (or (= code #x0009)
+        (= code #x0020))))
+
+(defun ignorable-p (char)
+  (let ((code (char-code char)))
+    (or (= code #x0020)
+        (= code #x0009)
+        ;; Line end
+        (= code #x000A)
+        (= code #x000D)
+        ;; Comma
+        (= code #x002C))))
+
+(defun gql-symbol (name)
+  (find-symbol name '#:org.shirakumo.graphql.symbols))
+
+(defun gql-intern (name)
+  (intern name '#:org.shirakumo.graphql.symbols))
+
+(defun peek (stream &optional (eof-error T))
+  (peek-char NIL stream eof-error))
+
 (defun translate-name (name)
   (etypecase name
     (string name)

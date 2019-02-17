@@ -10,3 +10,6 @@
   ;;
   (:export
    ))
+
+(defpackage #:org.shirakumo.graphql.symbols
+  (:use))
