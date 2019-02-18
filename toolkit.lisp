@@ -56,3 +56,19 @@
                     do (cond ((eql char #\-) (setf upcase T))
                              (upcase (write-char (char-upcase char) out))
                              (T (write-char (char-downcase char) out))))))))
+
+(defun schema-package-name (schema)
+  (format NIL "ORG.SHIRAKUMO.GRAPHQL.SCHEMA.~@(a~)" schema))
+
+(defun schema-package (schema &key (if-does-not-exist :error))
+  (let* ((name (schema-package-name schema))
+         (package (find-package name)))
+    (if package
+        package
+        (ecase if-does-not-exist
+          (:error (error "FIXME (No such schema ~a)" schema))
+          (:create (make-package name :use ()))
+          ((NIL) NIL)))))
+
+(defun schema-name (schema name &key (if-does-not-exist :error))
+  (intern (string name) (schema-package schema :if-does-not-exist if-does-not-exist)))

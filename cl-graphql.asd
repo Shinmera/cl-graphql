@@ -21,4 +21,5 @@
                (:file "generate")
                (:file "documentation"))
   :depends-on (:documentation-utils
-               :trivial-indent))
+               :trivial-indent
+               :closer-mop))
