@@ -40,8 +40,11 @@
     (setf (directives effective) (directives direct))
     effective))
 
-(defclass object ()
-  ())
+(defclass object () ())
+(defclass interface () ())
+(defclass union () ())
+(defclass enum () ())
+(defclass input-object () ())
 
 (defun field->slot-definition (schema field)
   (destructuring-bind (name type &rest options/args) field
@@ -53,7 +56,7 @@
             do (cond ((keywordp thing)
                       (push thing options))
                      ((eql '@ (first thing))
-                      (push thing directives))
+                      (push (rest thing) directives))
                      (T
                       (push thing arguments))))
       (list name :initarg (intern name "KEYWORD")
@@ -65,16 +68,23 @@
                  :directives directives))))
 
 (defmacro define-type ((schema symbol &optional name) implements &body options/fields)
-  (let ((symbol (schema-name schema symbol)))
+  (let ((symbol (schema-name schema symbol))
+        (options ())
+        (fields ())
+        (directives ()))
+    (loop for thing in options/args
+          do (cond ((keywordp (first thing))
+                    (push thing options))
+                   ((eql '@ (first thing))
+                    (push (rest thing) directives))
+                   (T
+                    (push (field->slot-definition schema thing) fields))))
     `(defclass ,symbol (,@implements type)
-       ,(loop for field in options/fields
-              unless (keywordp (first field))
-              collect (field->slot-definition schema field))
-       ,(loop for option in options/fields
-              when (keywordp (first option))
-              collect option)
+       ,fields
+       ,@options
        (:metaclass type-class)
-       (:type-name ,(or name (translate-name symbol))))))
+       (:type-name ,(or name (translate-name symbol)))
+       (:directives ,@options))))
 
 (trivial-indent:define-indentation define-type (4 6 &rest (&whole 2 4 &body)))
 
